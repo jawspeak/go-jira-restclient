@@ -2,6 +2,10 @@
 
 Build by documenting their API with a Swagger spec, and then generating with go-swagger a Go client.
 
+### Usage
+
+See the `main.go` for examples using the client.
+
 ### Development
 
 I have a GOPATH_source_me.sh at the top folder for this work.
