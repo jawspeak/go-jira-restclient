@@ -4,7 +4,7 @@ Build by documenting their API with a Swagger spec, and then generating with go-
 
 ### Usage
 
-See the `main.go` for examples using the client.
+See `main.go` for examples using the client.
 
 ### Development
 
