@@ -1,0 +1,9 @@
+// Config file you use to connect to your repository.
+// Rename to config.json when you're ready for your environment.
+// Reminder - json doesn't accept comments usually, we strip these out.
+{
+  "host": "api.example.com",
+  "username": "your-user",
+  // If password is blank, will prompt for it on the command line.
+  "password": "your-pass"
+}

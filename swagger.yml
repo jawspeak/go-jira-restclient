@@ -1,0 +1,226 @@
+swagger: '2.0'
+info:
+  # Version of Jira's Core Rest API coded against
+  version: '2'
+  description: "Coded against https://docs.atlassian.com/jira/REST/6.4.9/ Partially complete, more definitions needed."
+  title: Jira Server Rest API
+
+# host: <omitted>
+  # this is omitted because you use config.json (see config.sample.json)
+
+basePath: /rest/api/2/
+schemes:
+  - https
+consumes:
+  - application/json
+produces:
+  - application/json
+paths:
+  '/search':
+    get:
+      description: Returns Jira Issues that match the query
+      operationId: getSearch
+      parameters:
+        - name: jql
+          type: string
+          in: query
+          required: true
+        - name: startAt
+          description: the index of the first issue to return (0-based)
+          type: integer
+          in: query
+        - name: maxResults
+          description: "The maximum number of issues to return (defaults to 50). The maximum allowable value is dictated by the JIRA property 'jira.search.views.default.max'. If you specify a value that is higher than this number, your search results will be truncated."
+          type: integer
+          in: query
+        - name: fields
+          description: "The list of fields to return for each issue. By default, all navigable fields are returned"
+          type: string
+          in: query
+        - name: expand
+          description: A comma-separated list of the parameters to expand
+          type: string
+          in: query
+      responses:
+        '200':
+          description: Success
+          schema:
+            $ref: '#/definitions/SearchResponse'
+        '400':
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/BadRequest'
+        '404':
+          description: Not Found
+          schema:
+            $ref: '#/definitions/NotFound'
+
+
+
+definitions:
+  NotFound:
+    type: object
+  SearchResponse:
+    type: object
+    properties:
+      startAt:
+        type: integer
+      maxResults:
+        type: integer
+      total:
+        description: total number in all pages
+        type: integer
+      expand:
+        type: string
+
+      values:
+        type: array
+        items:
+          $ref: '#/definitions/Issue'
+  BadRequest:
+    type: object
+    properties:
+      errorMessages:
+        type: array
+        items:
+          type: string
+      errors:
+        type: object
+        additionalProperties:
+          type: string
+  Issue:
+    type: object
+    properties:
+      expand:
+        type: string
+      id:
+        type: integer
+        format: int64
+      self:
+        type: string
+      key:
+        type: string
+      fields:
+        type: object
+        properties:
+          created:
+            type: string
+          resolutiondate:
+            type: string
+          updated:
+            type: string
+          description:
+            type: string
+          summary:
+            type: string
+          resolution:
+            type: object
+            properties:
+              name:
+                type: string
+                # e.g. "Fixed"
+          priority:
+            type: object
+            properties:
+              name:
+                type: string
+                # e.g. "P2 (Important)"
+          labels:
+            type: array
+            items:
+              type: string
+          assignee:
+            $ref: '#/definitions/User'
+          status:
+            type: object
+            properties:
+              iconUrl:
+                type: string
+              name:
+                type: string
+                description: e.g. Resolved
+              statusCategory:
+                type: object
+                properties:
+                  key:
+                    type: string
+                    description: e.g. done
+                  colorName:
+                    type: string
+                    description: e.g. green
+                  name:
+                    type: string
+                    description: e.g. Done
+          components:
+            type: array
+            items: 
+              type: string
+          creator:
+            $ref: '#/definitions/User'
+          reporter:
+            $ref: '#/definitions/User'
+          issuetype:
+            type: object
+            properties:
+              name:
+                type: string
+                description: 'e.g. Task, Bug, Feature'
+              description: 
+                type: string
+              iconUrl:
+                type: string
+              subtask:
+                type: boolean
+          project:
+            type: object
+            properties:
+              name: 
+                type: string
+              key:
+                type: string
+              # avatarUrls:
+                # $ref: '#/definitions/AvatarUrls'
+          watches:
+            type: object
+            properties:
+              self:
+                type: string
+              watchCount:
+                type: integer
+
+
+
+  # Basic things
+  User:
+    type: object
+    properties:
+      self:
+        type: string
+      name:
+        type: string
+        description: e.g. ldap username
+      key:
+        type: string
+        description: e.g. ldap username
+      emailAddress:
+        type: string
+      # avatarUrls:
+      #   $ref: '#/definitions/AvatarUrls'
+      displayName:
+        type: string
+      active:
+        type: boolean
+      timeZone:
+        type: string
+
+  # AvatarUrls:
+  #   type: object
+  #   properties:
+  #     '48x48':
+  #       type: string
+  #     '32x32':
+  #       type: string
+  #     '24x24':
+  #       type: string
+  #     '16x16':
+  #       type: string
